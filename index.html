@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wiki Os Xingadores</title>
+<link rel="icon" href="server-icon.png">
+<style>
+:root{--bg:#16181d;--panel:#1d2026;--line:#2b2f38;--tx:#d9dde4;--mut:#8b93a1;--ac:#f5a623;--ac2:#3b9cff;--code:#262a33;color-scheme:dark}
+@media (prefers-color-scheme:light){:root{--bg:#f6f7f9;--panel:#fff;--line:#e1e4ea;--tx:#1f2430;--mut:#667085;--ac:#c47a00;--ac2:#1565c0;--code:#eef0f4;color-scheme:light}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px 18px;background:var(--panel);border-bottom:1px solid var(--line)}
+header img{width:36px;height:36px;border-radius:6px;image-rendering:auto}
+header b{font-size:18px}
+header b span{color:var(--ac)}
+#menu{display:none;background:none;border:1px solid var(--line);color:var(--tx);border-radius:6px;padding:4px 10px;font-size:18px;cursor:pointer}
+.wrap{display:flex;max-width:1200px;margin:0 auto}
+nav{width:270px;flex:none;padding:18px;position:sticky;top:57px;align-self:flex-start;height:calc(100vh - 57px);overflow:auto}
+nav input{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--tx);margin-bottom:14px;font:inherit;font-size:14px}
+nav h4{margin:16px 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+nav a{display:block;padding:6px 10px;border-radius:6px;color:var(--tx);text-decoration:none;font-size:15px}
+nav a:hover{background:var(--panel)}
+nav a.on{background:var(--panel);color:var(--ac);font-weight:600;box-shadow:inset 3px 0 var(--ac)}
+main{flex:1;min-width:0;padding:28px 34px 80px}
+main h1{margin:0 0 8px;font-size:32px}
+main h2{margin:30px 0 8px;padding-top:6px;font-size:21px;border-top:1px solid var(--line)}
+main p.lead{color:var(--mut);font-size:17px;margin-top:0}
+main ul{padding-left:22px}main li{margin:5px 0}
+a{color:var(--ac2)}
+code,.ip{background:var(--code);padding:2px 7px;border-radius:5px;font:14px ui-monospace,Consolas,monospace}
+.ip{color:var(--ac);cursor:pointer;border:1px dashed var(--line)}
+.ip:hover{border-color:var(--ac)}
+.box{border:1px solid var(--line);border-left:4px solid var(--ac);background:var(--panel);padding:12px 16px;border-radius:8px;margin:16px 0}
+.box.warn{border-left-color:#e5484d}
+table{border-collapse:collapse;width:100%;margin:12px 0;background:var(--panel);border-radius:8px;overflow:hidden;font-size:15px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+.tw{overflow-x:auto}
+.nav2{display:flex;justify-content:space-between;gap:10px;margin-top:44px}
+.nav2 a{padding:10px 16px;border:1px solid var(--line);border-radius:8px;background:var(--panel);text-decoration:none;color:var(--tx)}
+.nav2 a:hover{border-color:var(--ac)}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ac);color:#111;padding:8px 16px;border-radius:8px;font-weight:600;opacity:0;pointer-events:none;transition:.2s}
+#toast.show{opacity:1}
+@media(max-width:820px){
+#menu{display:block}
+nav{position:fixed;left:0;top:57px;bottom:0;height:auto;width:80%;max-width:300px;background:var(--bg);border-right:1px solid var(--line);transform:translateX(-100%);transition:.2s;z-index:4}
+nav.open{transform:none}
+main{padding:22px 18px 70px}main h1{font-size:26px}
+}
+</style>
+</head>
+<body>
+<header>
+  <button id="menu" aria-label="Menu">☰</button>
+  <img src="server-icon.png" alt="">
+  <b>Wiki <span>Os Xingadores</span></b>
+</header>
+<div class="wrap">
+  <nav id="nav"><input id="q" type="search" placeholder="Buscar na wiki…" autocomplete="off"><div id="links"></div></nav>
+  <main id="main"></main>
+</div>
+<div id="toast">IP copiado!</div>
+
+<script>
+/* ===== EDITE AQUI: dados do servidor ===== */
+var CFG = {
+  nome: "Os Xingadores",
+  ipJava: "osxingadoresjavbed.duckdns.org",
+  ipBedrock: "osxingadoresjavbed.duckdns.org",
+  portaBedrock: "19132",
+  versaoJava: "1.21 → 26.2"
+};
+
+/* ===== PÁGINAS (grupo, id, título, conteúdo HTML) ===== */
+var P = [
+["Começando","primeiros-passos","Primeiros passos",
+`<p class="lead">Primeira vez no servidor? Este guia tem o básico para começar sua jornada.</p>
+<h2>Conectar ao servidor</h2>
+<ul>
+<li><b>IP Java:</b> <span class="ip" data-ip="${CFG.ipJava}">${CFG.ipJava}</span></li>
+<li><b>IP Bedrock:</b> <span class="ip" data-ip="${CFG.ipBedrock}">${CFG.ipBedrock}</span></li>
+<li><b>Porta Bedrock:</b> <code>${CFG.portaBedrock}</code></li>
+<li><b>Versões Java:</b> ${CFG.versaoJava}</li>
+</ul>
+<p>Clique em um IP para copiar. Veja o passo a passo completo em <a href="#conectar">Como conectar</a>.</p>
+<h2>Seus primeiros minutos</h2>
+<ul>
+<li><b>Spawn:</b> use <code>/spawn</code> para voltar ao ponto inicial a qualquer momento.</li>
+<li><b>Kit inicial:</b> use <code>/kits</code> para abrir o menu de kits disponíveis para o seu cargo.</li>
+<li><b>Proteja seu terreno:</b> antes de construir, proteja a área com uma pá dourada. Veja <a href="#protecao">Proteção de terrenos</a>.</li>
+<li><b>Defina sua casa:</b> use <code>/sethome nome</code> e volte depois com <code>/home nome</code>.</li>
+<li><b>Chat:</b> converse com os outros jogadores pelo chat; veja mais em <a href="#social">Social e guildas</a>.</li>
+</ul>
+<h2>Como ganhar dinheiro</h2>
+<ul>
+<li>Venda itens com <code>/sell</code> ou <code>/sellall inventory</code>.</li>
+<li>Entre em uma profissão com <code>/jobs join</code> e ganhe dinheiro ao minerar, plantar, pescar e lutar.</li>
+<li>Venda para outros jogadores no leilão <code>/ah</code> ou abra uma loja de baú. Mais em <a href="#economia">Economia</a>.</li>
+</ul>
+<div class="box"><b>Dica:</b> não entre em combate sem armadura e armas decentes. Perder seus itens dói mais do que fugir.</div>`],
+
+["Começando","conectar","Como conectar",
+`<p class="lead">Java, Bedrock (celular e Windows) e console: veja como entrar em cada plataforma.</p>
+<h2>Minecraft Java (PC)</h2>
+<ul><li>Multijogador → Adicionar servidor</li><li>Endereço: <span class="ip" data-ip="${CFG.ipJava}">${CFG.ipJava}</span></li><li>Entre e siga as instruções na tela.</li></ul>
+<h2>Minecraft Bedrock (celular, Windows 10/11)</h2>
+<ul><li>Jogar → Servidores → Adicionar servidor</li>
+<li>Endereço: <span class="ip" data-ip="${CFG.ipBedrock}">${CFG.ipBedrock}</span></li>
+<li>Porta: <code>${CFG.portaBedrock}</code></li></ul>
+<h2>Console (Xbox, PlayStation, Switch)</h2>
+<p>Consoles não permitem adicionar servidores pelo IP. Adicione a conta do servidor na sua lista de amigos (<b>conta: preencher</b>) e entre pela sessão que aparecerá em “Amigos”.</p>
+<div class="box warn"><b>Atenção:</b> o endereço do servidor funciona por <b>IPv6</b>. Se não conseguir conectar, confira se sua internet tem IPv6 ativo ou peça ajuda no Discord.</div>
+<div class="box">Jogadores Bedrock entram com um ponto antes do nick (por exemplo <code>.SeuNick</code>); isso é automático.</div>`],
+
+["Começando","regras","Regras",
+`<p class="lead">Respeite as regras para manter o servidor divertido para todos. Quebrar regras pode gerar punição.</p>
+<div class="box warn"><b>Edite esta página</b> com as regras reais do seu servidor. Abaixo há uma sugestão.</div>
+<ul>
+<li><b>Respeito:</b> sem ofensas, preconceito ou assédio no chat.</li>
+<li><b>Sem hacks:</b> cheats, x-ray, auto-clickers e mods de vantagem são proibidos.</li>
+<li><b>Sem bugs:</b> explorar bugs ou duplicar itens é proibido. Reporte à staff.</li>
+<li><b>Sem spam ou divulgação</b> de outros servidores.</li>
+<li><b>Construções:</b> sem griefing; não destrua nem roube construções protegidas.</li>
+<li><b>Contas:</b> não compartilhe sua conta ou senha com ninguém.</li>
+</ul>
+<h2>Punições</h2>
+<p>Dependendo da gravidade: aviso, mute, kick, banimento temporário ou permanente. Se acha que foi injusto, use o canal de apelação da staff.</p>`],
+
+["Sobrevivência","protecao","Proteção de terrenos",
+`<p class="lead">Proteja sua base para que ninguém mexa nas suas construções e baús.</p>
+<h2>Como proteger</h2>
+<ul>
+<li>Segure uma <b>pá dourada</b>.</li>
+<li>Clique com o botão direito em um canto da área que quer proteger.</li>
+<li>Clique no canto oposto. A área é criada entre os dois pontos.</li>
+<li>Para ver ou apagar seus terrenos: <code>/listclaims</code> e <code>/abandonclaim</code>.</li>
+</ul>
+<h2>Dar acesso a amigos</h2>
+<ul>
+<li><code>/trust nick</code>: dá acesso total ao terreno.</li>
+<li><code>/containertrust nick</code>: acesso a baús e fornalhas.</li>
+<li><code>/accesstrust nick</code>: acesso a botões e portas.</li>
+<li><code>/untrust nick</code>: remove o acesso.</li>
+</ul>
+<div class="box">Use a pá de madeira como “inspeção” para ver quem é o dono de um terreno ao clicar em um bloco.</div>`],
+
+["Sobrevivência","teleportes","Casas, warps e teleporte",
+`<div class="tw"><table><tr><th>Comando</th><th>O que faz</th></tr>
+<tr><td><code>/spawn</code></td><td>Vai para o spawn</td></tr>
+<tr><td><code>/sethome nome</code></td><td>Cria uma casa</td></tr>
+<tr><td><code>/home nome</code></td><td>Teleporta para sua casa</td></tr>
+<tr><td><code>/delhome nome</code></td><td>Apaga uma casa</td></tr>
+<tr><td><code>/warp nome</code></td><td>Vai para um warp público</td></tr>
+<tr><td><code>/pwarp</code></td><td>Lista as warps (lojas e locais) de jogadores</td></tr>
+<tr><td><code>/pwarp set nome</code></td><td>Cria uma warp onde você está</td></tr>
+<tr><td><code>/tpa nick</code></td><td>Pede para ir até outro jogador</td></tr>
+<tr><td><code>/tpaccept</code></td><td>Aceita um pedido de teleporte</td></tr>
+</table></div>
+<p>Alguns comandos dependem do seu cargo. Se algum for negado, fale com a staff.</p>`],
+
+["Sobrevivência","economia","Economia",
+`<p class="lead">O servidor usa uma economia com saldo em dinheiro (R$).</p>
+<h2>Ver e enviar dinheiro</h2>
+<ul><li><code>/bal</code>: ver seu saldo.</li><li><code>/pay nick valor</code>: enviar dinheiro.</li></ul>
+<h2>Lojas</h2>
+<ul>
+<li><b>Loja do servidor:</b> <code>/ah</code> abre o menu de compra de itens e blocos.</li>
+<li><b>Vender rápido:</b> <code>/sell hand</code> vende o item da mão; <code>/sellall inventory</code> vende tudo o que for vendável.</li>
+<li><b>Loja de baú:</b> coloque um item no baú, segure-o e use <code>/qs create preço</code> no baú; os outros jogadores compram clicando no baú.</li>
+<li><b>Troca segura:</b> <code>/trade nick</code> abre uma troca com outro jogador.</li>
+</ul>
+<h2>Profissões</h2>
+<p>Entre em uma profissão com <code>/jobs join nome</code> e veja as opções com <code>/jobs browse</code>. Cada profissão paga por ações diferentes (minerar, plantar, pescar etc.).</p>
+<h2>mcMMO</h2>
+<p>Suas habilidades (mineração, machado, pesca…) sobem com o uso. Veja seu nível com <code>/mcstats</code>.</p>`],
+
+["Social","social","Social e guildas",
+`<h2>Chat</h2>
+<ul><li>Converse normalmente no chat para falar com os jogadores próximos/globais, conforme a configuração do servidor.</li>
+<li><code>/msg nick mensagem</code>: mensagem privada.</li>
+<li><code>/tags</code>: escolha a tag que aparece ao lado do seu nick.</li></ul>
+<h2>Guildas</h2>
+<ul><li><code>/guild</code>: abre o menu de guildas, onde você pode criar ou entrar em uma.</li>
+<li><code>/guild chat</code>: liga e desliga o chat privado da guilda.</li>
+<li><code>/guild withdraw valor</code>: retira dinheiro do banco da guilda (se tiver permissão).</li></ul>
+<h2>Casamento</h2>
+<p>Use <code>/marry</code> para pedir alguém em casamento. A lista de comandos aparece em <code>/marry help</code>.</p>`],
+
+["Social","ranking","Rankings",
+`<p class="lead">Quem é o melhor? Os rankings são atualizados toda semana.</p>
+<ul>
+<li><code>/ranking</code>: abre o menu com as categorias.</li>
+<li>Categorias: mobs mortos, poções, pesca, plantas colhidas, escavação, minérios, jogadores mortos e dinheiro.</li>
+</ul>
+<div class="box">O <b>top 1</b> de cada categoria ganha uma tag exclusiva ao lado do nick. Escolha mostrar ou esconder tags com <code>/tags</code>.</div>`],
+
+["Servidor","cargos","Cargos",
+`<div class="tw"><table><tr><th>Cargo</th><th>Para quem</th></tr>
+<tr><td><b>Player</b></td><td>Todos os jogadores</td></tr>
+<tr><td><b>Staff</b></td><td>Ajuda os jogadores e atende dúvidas</td></tr>
+<tr><td><b>Moderador</b></td><td>Cuida do chat e aplica punições</td></tr>
+<tr><td><b>Gerente</b></td><td>Coordena a equipe e os eventos</td></tr>
+<tr><td><b>Adm</b></td><td>Administração do servidor</td></tr>
+</table></div>
+<p>Cada cargo tem uma tag própria, visível no chat e na lista de jogadores.</p>`],
+
+["Servidor","faq","Perguntas frequentes",
+`<h2>Não consigo conectar</h2>
+<p>Confira o endereço e a porta, e se sua internet tem IPv6. Em caso de dúvida, chame a staff.</p>
+<h2>Perdi minha casa ou meu terreno</h2>
+<p>Use <code>/home</code> para listar suas casas e <code>/listclaims</code> para ver seus terrenos.</p>
+<h2>Fui punido injustamente</h2>
+<p>Fale com um moderador ou gerente para pedir revisão.</p>
+<h2>Como falo com a staff?</h2>
+<p>Pelo Discord do servidor (<b>link: preencher</b>) ou chamando alguém da staff no jogo.</p>`]
+];
+
+/* ===== LÓGICA ===== */
+var $=function(s){return document.querySelector(s)};
+var links=$("#links"),main=$("#main"),nav=$("#nav"),q=$("#q");
+
+function buildNav(filter){
+  filter=(filter||"").toLowerCase();var g="",h="";
+  P.forEach(function(p){
+    var txt=(p[2]+" "+p[3].replace(/<[^>]+>/g," ")).toLowerCase();
+    if(filter&&txt.indexOf(filter)<0)return;
+    if(p[0]!==g){g=p[0];h+="<h4>"+g+"</h4>"}
+    h+='<a href="#'+p[1]+'" data-id="'+p[1]+'">'+p[2]+"</a>";
+  });
+  links.innerHTML=h||'<p style="color:var(--mut);padding:6px 10px">Nada encontrado.</p>';
+  mark();
+}
+function cur(){var id=location.hash.slice(1);return P.findIndex(function(p){return p[1]===id})}
+function mark(){var i=cur(),id=i<0?P[0][1]:P[i][1];
+  links.querySelectorAll("a").forEach(function(a){a.classList.toggle("on",a.dataset.id===id)})}
+function render(){
+  var i=cur();if(i<0)i=0;var p=P[i];
+  var prev=P[i-1],next=P[i+1];
+  main.innerHTML="<h1>"+p[2]+"</h1>"+p[3]+'<div class="nav2"><span>'+
+    (prev?'<a href="#'+prev[1]+'">← '+prev[2]+"</a>":"")+"</span><span>"+
+    (next?'<a href="#'+next[1]+'">'+next[2]+" →</a>":"")+"</span></div>";
+  document.title=p[2]+" | Wiki "+CFG.nome;
+  window.scrollTo(0,0);nav.classList.remove("open");mark();
+}
+function toast(){var t=$("#toast");t.classList.add("show");setTimeout(function(){t.classList.remove("show")},1400)}
+document.addEventListener("click",function(e){
+  var el=e.target.closest(".ip");if(!el)return;
+  var ip=el.dataset.ip;
+  try{navigator.clipboard.writeText(ip).then(toast)}catch(x){
+    var r=document.createRange();r.selectNode(el);getSelection().removeAllRanges();getSelection().addRange(r)}
+});
+q.addEventListener("input",function(){buildNav(q.value)});
+$("#menu").addEventListener("click",function(){nav.classList.toggle("open")});
+window.addEventListener("hashchange",render);
+buildNav();render();
+</script>
+</body>
+</html>
